@@ -1,10 +1,17 @@
-from flask import Flask, render_template, request, send_from_directory
+import io
 import os
-import subprocess
+from contextlib import redirect_stdout
+from flask import (
+    Flask,
+    render_template,
+    request,
+    send_file,
+)
+from yt_dlp import YoutubeDL
+from pydub import AudioSegment
+
 
 app = Flask(__name__)
-
-DOWNLOAD_FOLDER = "downloads"
 
 
 @app.route("/")
@@ -16,44 +23,33 @@ def index():
 def download():
     youtube_url = request.form["youtube_url"]
 
-    ydl_command = [
-        "yt-dlp",
-        "--no-playlist",
-        "--format",
-        "bestaudio/best",
-        "--extract-audio",
-        "--audio-format",
-        "mp3",
-        "--output",
-        "downloads/%(title)s.%(ext)s",
-        youtube_url,
-    ]
-    filename = None
-    try:
-        subprocess.run(ydl_command, check=True)
-        filename = get_downloaded_filename(youtube_url)
-        return send_from_directory("downloads", filename, as_attachment=True)
-    finally:
-        if filename:
-            os.remove(f"downloads/" + filename)
+    ydl_args = {
+        "format": "bestaudio/best",
+        "noplaylist": True,
+        "outtmpl": "-",
+        "logtostderr": True,
+    }
+    ydl = YoutubeDL(ydl_args)
+    info_dict = ydl.extract_info(youtube_url, download=False)
+    title = info_dict.get("title", None)
+    ext = info_dict.get("ext", None)
+    buffer = io.BytesIO()
+    with redirect_stdout(buffer):
+        ydl.download([youtube_url])
+    buffer.seek(0)
+    audio = AudioSegment.from_file(buffer, format=ext)
 
-
-def get_downloaded_filename(youtube_url):
-    ydl_command = [
-        "yt-dlp",
-        "--get-filename",
-        "--no-playlist",
-        "--output",
-        "%(title)s.%(ext)s",
-        youtube_url,
-    ]
-    result = subprocess.run(ydl_command, capture_output=True, text=True)
-    filename = result.stdout.strip()
-    filename = os.path.splitext(filename)[0] + ".mp3"  # Change the extension to .mp3
-    return filename
+    # Export the audio to MP3 format
+    mp3_file = io.BytesIO()
+    audio.export(mp3_file, format="mp3")
+    mp3_file.seek(0)
+    return send_file(
+        mp3_file,
+        as_attachment=True,
+        download_name=title + ".mp3",
+        mimetype="audio/mpeg",
+    )
 
 
 if __name__ == "__main__":
-    if not os.path.exists(DOWNLOAD_FOLDER):
-        os.makedirs(DOWNLOAD_FOLDER)
     app.run(port=5000)

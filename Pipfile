@@ -8,6 +8,7 @@ yt-dlp = "*"
 flask = "*"
 gunicorn = "*"
 pytest = "*"
+pydub = "*"
 
 [dev-packages]
 
