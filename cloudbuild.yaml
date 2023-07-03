@@ -1,0 +1,21 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["build", "-t", "gcr.io/forward-script-391502/youtube-mp3-downloader", "."]
+
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/forward-script-391502/youtube-mp3-downloader"]
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - "run"
+      - "deploy"
+      - "youtube-mp3-downloader"
+      - "--image"
+      - "gcr.io/forward-script-391502/youtube-mp3-downloader"
+      - "--region"
+      - "asia-east1"
+      - "--allow-unauthenticated"
+
+images:
+  - gcr.io/forward-script-391502/youtube-mp3-downloader
