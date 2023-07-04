@@ -17,4 +17,6 @@ COPY . .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 app:app
+RUN chmod +x entry.sh
+
+ENTRYPOINT ["/app/entry.sh"]
