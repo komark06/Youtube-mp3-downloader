@@ -26,3 +26,6 @@ This is a simple python web application that can download YouTube MP3 files.
     ```
 3. Finally, open your web browser and navigate to [localhost:5000](http://localhost:5000) and begin downloading YouTube MP3 files.
 
+## TODO
+1. Add a progress bar to enhance user experience.
+2. When web server is overloaded, send "503 Service Unavailable" to notify client.
