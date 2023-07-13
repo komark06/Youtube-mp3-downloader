@@ -1,11 +1,10 @@
 FROM python:3.10-slim
 
-# Install ffmpeg
 RUN apt-get update && \
-    apt-get install -y ffmpeg && \
+    apt-get install -y --no-install-recommends ffmpeg && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Allow statements and log messages to immediately appear in the logs
 ENV PYTHONUNBUFFERED True
 
 WORKDIR /app
