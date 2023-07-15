@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>YouTube MP3 Downloader</title>
     <style>
         body {
@@ -41,11 +42,20 @@
 
 <body>
     <h1>YouTube MP3 Downloader</h1>
-    <form action="/download" method="post">
-        <input type="text" name="youtube_url" placeholder="Enter the URL of the YouTube video">
+    <form id="download-form" action="/download" method="post" onsubmit="submitForm(event)">
+        <input type="text" id="youtube_url" name="youtube_url" placeholder="Enter the URL of the YouTube video">
         <button type="submit">download</button>
-        <p style="color: red;">{{ error_message }}</p>
+        <p id="error-message" style="color: red;"></p>
     </form>
+
+    <script>
+        function submitForm(event) {
+            event.preventDefault();
+            document.getElementById('download-form').submit();
+            document.getElementById('youtube_url').value = '';
+        }
+    </script>
 </body>
+
 
 </html>
