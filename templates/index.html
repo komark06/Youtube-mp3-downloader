@@ -42,17 +42,17 @@
 
 <body>
     <h1>YouTube MP3 Downloader</h1>
-    <form id="download-form" action="/download" method="post">
+    <form id="download-form" action="/download" method="post" onsubmit="submitForm(event)">
         <input type="text" id="youtube_url" name="youtube_url" placeholder="Enter the URL of the YouTube video">
-        <button type="submit" onclick="updateFormAction()">download</button>
-        <p style="color: red;">{{ error_message }}</p>
+        <button type="submit">download</button>
+        <p id="error-message" style="color: red;"></p>
     </form>
 
     <script>
-        function updateFormAction() {
-            var youtubeUrl = document.getElementById('youtube_url').value;
-            var form = document.getElementById('download-form');
-            form.action = "/download?youtube_url=" + encodeURIComponent(youtubeUrl);
+        function submitForm(event) {
+            event.preventDefault();
+            document.getElementById('download-form').submit();
+            document.getElementById('youtube_url').value = '';
         }
     </script>
 </body>
