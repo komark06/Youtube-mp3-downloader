@@ -29,20 +29,26 @@ def download():
         "logtostderr": True,
     }
     ydl = YoutubeDL(ydl_args)
-    info_dict = ydl.extract_info(youtube_url, download=False)
+    try:
+        info_dict = ydl.extract_info(youtube_url, download=False)
+    except Exception as error:
+        return error_html(
+            "Check your youtube link. It might be invalid or member only."
+        )
+    if info_dict["duration"] > 1800:
+        return error_html("Cannot download videos longer than 30 minutes.")
     title = info_dict["title"]
     ext = info_dict["ext"]
-    if info_dict["duration"] > 1800:
-        error_message = "Cannot download videos longer than 30 minutes."
-        return render_template("index.html", error_message=error_message)
     buffer = io.BytesIO()
     with redirect_stdout(buffer):
         ydl.download([youtube_url])
     buffer.seek(0)
-    audio = AudioSegment.from_file(buffer, format=ext)
-    # Export the audio to MP3 format
-    mp3_file = io.BytesIO()
-    audio.export(mp3_file, format="mp3")
+    try:
+        audio = AudioSegment.from_file(buffer, format=ext)
+        mp3_file = io.BytesIO()
+        audio.export(mp3_file, format="mp3")
+    except Exception as error:
+        return error_html("Cannot convert your video to mp3.")
     mp3_file.seek(0)
     return send_file(
         mp3_file,
@@ -50,6 +56,10 @@ def download():
         download_name=title + ".mp3",
         mimetype="audio/mpeg",
     )
+
+
+def error_html(error_message):
+    return render_template("index.html", error_message=error_message)
 
 
 if __name__ == "__main__":
