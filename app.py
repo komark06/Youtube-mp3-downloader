@@ -20,7 +20,7 @@ def index():
 
 @app.route("/download", methods=["POST"])
 def download():
-    youtube_url = request.form["youtube_url"]
+    youtube_url = request.form["youtube_url_hidden"]
     ydl_args = {
         "format": "bestaudio/best",
         "noplaylist": True,
