@@ -1,16 +1,30 @@
 import io
+import os
 from contextlib import redirect_stdout
-from flask import (
-    Flask,
-    render_template,
-    request,
-    send_file,
-)
+from flask import Flask, render_template, request, send_file, send_from_directory
 from yt_dlp import YoutubeDL
 from pydub import AudioSegment
 
 
 app = Flask(__name__)
+
+
+@app.route("/favicon.png")
+def favicon_png():
+    return send_from_directory(
+        os.path.join(app.root_path, "static"),
+        "favicon.png",
+        mimetype="image/vnd.microsoft.icon",
+    )
+
+
+@app.route("/favicon.ico")
+def favicon():
+    return send_from_directory(
+        os.path.join(app.root_path, "static"),
+        "favicon.ico",
+        mimetype="image/vnd.microsoft.icon",
+    )
 
 
 @app.route("/")

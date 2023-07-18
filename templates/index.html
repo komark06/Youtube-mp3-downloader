@@ -3,9 +3,14 @@
 
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}" sizes="16x16">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicon.png') }}">
     <title>YouTube MP3 Downloader</title>
     <style>
         body {
+            background-color: gray;
             display: flex;
             flex-direction: column;
             align-items: center;
