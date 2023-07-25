@@ -8,7 +8,7 @@
 -i https://pypi.org/simple/
 blinker==1.6.2; python_version >= '3.7'
 brotli==1.0.9; platform_python_implementation == 'CPython'
-certifi==2023.5.7; python_version >= '3.6'
+certifi==2023.7.22; python_version >= '3.6'
 click==8.1.4; python_version >= '3.7'
 exceptiongroup==1.1.2; python_version < '3.11'
 flask==2.3.2
